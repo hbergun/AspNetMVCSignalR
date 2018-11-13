@@ -1,0 +1,42 @@
+﻿@{Layout = null;}
+
+<!DOCTYPE
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+    <script src="~/Scripts/jquery.signalR-2.3.0.min.js"></script>
+    <script src="@Url.Content("~/signalr/hubs")"></script>
+    <script>  
+        var hubProxy = $.connection.myHub;
+      //  $.connection.hub.logging = true;
+        $.connection.hub.start().done(function () {
+            console.log('Connection Succesful');
+            ///SERVER
+            $('#btnSend').click(function () {
+                hubProxy.server.anons($('#message').val(), $('#userName').val()) //İçeriği Parametre Alır
+            })
+
+        }).fail(function (error) {
+            console.log('Connection Fail Error: ' + error);
+            })
+
+
+
+        ///CLİENT
+        $.connection.userActivityHub.client.updateUsersOnlineCount = function (usercount) { $('#userCount').html("<b>Online User Count :</b>" + usercount) }
+        hubProxy.client.anons = function (newMessage) { $('#allMessages').append(newMessage)} 
+        
+    </script>
+
+</head>
+<body id="pbody">
+    <div id="userCount" style="position:absolute"></div><br />
+    <input type="text" id="userName" /><br /><br />
+    <input type="text" id="message" /><br />  <br />
+    <button id="btnSend">Tıkla Ve Gönder</button><br />
+    <div id="allMessages"></div><br />
+
+</body>
+</html>
